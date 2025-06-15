@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    image: ${{ secrets.DOCKER_HUB_USERNAME }}/redis-cache-demo:latest
+    container_name: redis-cache-demo
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      REDIS_URL: redis://redis:6379
+      PORT: 3000
+    depends_on:
+      - redis
+    networks:
+      - backend
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    volumes:
+      - redis-data:/data
+    networks:
+      - backend
+
+volumes:
+  redis-data:
+
+networks:
+  backend:
+    driver: bridge
